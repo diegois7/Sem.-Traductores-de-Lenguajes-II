@@ -1,0 +1,57 @@
+{
+  "title": "IEPC - Registro de Candidatura (MR)",
+  "type": "object",
+  "required": ["procesoElectoral", "candidatura", "partido", "distrito", "persona", "documentos"],
+  "properties": {
+    "procesoElectoral": { "type": "string", "enum": ["PELC 2026-2027"] },
+    "candidatura": {
+      "type": "object",
+      "required": ["principio", "cargo"],
+      "properties": {
+        "principio": { "type": "string", "enum": ["MR", "RP"] },
+        "cargo": { "type": "string", "enum": ["DIPUTACION", "AYUNTAMIENTO"] }
+      }
+    },
+    "partido": {
+      "type": "object",
+      "required": ["siglas", "tipoRegistro"],
+      "properties": {
+        "siglas": { "type": "string", "min": 2, "max": 12, "pattern": "^[A-ZÁÉÍÓÚÑ]+$" },
+        "tipoRegistro": { "type": "string", "enum": ["PARTIDO", "COALICION", "CANDIDATURA_COMUN"] }
+      }
+    },
+    "distrito": { "type": "integer", "min": 1, "max": 20 },
+    "persona": {
+      "type": "object",
+      "required": ["nombre", "curp", "fechaNacimiento", "genero", "domicilio"],
+      "properties": {
+        "nombre": { "type": "string", "min": 5, "max": 120 },
+        "curp": { "type": "string", "pattern": "^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[0-9A-Z]{2}$" },
+        "fechaNacimiento": { "type": "string", "format": "date" },
+        "genero": { "type": "string", "enum": ["MUJER", "HOMBRE", "NO_BINARIO"] },
+        "domicilio": {
+          "type": "object",
+          "required": ["municipio", "cp"],
+          "properties": {
+            "municipio": { "type": "string", "min": 3, "max": 80 },
+            "cp": { "type": "string", "pattern": "^[0-9]{5}$" }
+          }
+        }
+      }
+    },
+    "accionesAfirmativas": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["DISCAPACIDAD", "LGBTTTIQ+", "INDIGENA", "AFROMEXICANA", "JALISCIENSE_EXTRANJERO"] }
+    },
+    "documentos": {
+      "type": "object",
+      "required": ["ine", "actaNacimiento", "aceptacionCandidatura"],
+      "properties": {
+        "ine": { "type": "boolean" },
+        "actaNacimiento": { "type": "boolean" },
+        "aceptacionCandidatura": { "type": "boolean" },
+        "declaracionNoSentencia": { "type": "boolean" }
+      }
+    }
+  }
+}
