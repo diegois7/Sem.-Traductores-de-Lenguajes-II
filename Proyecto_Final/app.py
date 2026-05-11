@@ -34,12 +34,13 @@ def tree_to_dict(node):
 
 # --- MENÚ LATERAL ---
 with st.sidebar:
-    st.title("Proyecto final")
-    st.write("🔥")
+    st.title("Proyecto Final:")
+    st.write("💻 Sem. Traductores de Lenguajes II")
+    st.write("Diego Alejandro Martínez Meléndez - 221349542")
 
 # --- CUERPO PRINCIPAL ---
 st.title("Compilador de C++")
-st.caption("Analizador léxico, sintáctico y semántico con generación de código ASM para 8086")
+st.caption("Analizador léxico, sintáctico y semántico con generación de código ASM (experimental)")
 st.divider()
 
 col_input, col_output = st.columns([1, 1.2], gap="large")
