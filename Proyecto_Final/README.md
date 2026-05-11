@@ -1,4 +1,6 @@
-# 🚀 Compilador C++ a Ensamblador 8086
+# 🚀 Proyecto Final - Seminario de Traductores de Lenguajes II - Diego Alejandro Martínez Meléndez - 221349542
+
+**🔗 Acceso Directo a la App:** [https://sem-traductores-de-lenguajes-ii-pf.streamlit.app/](https://sem-traductores-de-lenguajes-ii-pf.streamlit.app/)
 
 Este proyecto es un compilador básico el cual permite analizar lexicamente y sintactimanete un código c++, así como convertirlo a un ASM **emu8086** (experimental).
 
@@ -26,12 +28,6 @@ Traducción directa a lenguaje ensamblador Intel 8086, optimizada para ser carga
 ![Ventana ASM](/Proyecto%20Final/img/ASM.png)
 *Código resultante listo para emu8086.*
 
-## 📂 Estructura de Archivos
-- **`app.py`**: Interfaz en Streamlit (PY)
-- **`analizadorLexico.py`**: Tokenizador.
-- **`parser_lr.py` / `arbol_sintactico_lr.py`**: Motor sintáctico.
-- **`analizador_semantico.py`**: Validador de lógica y tipos.
-- **`generador_asm.py`**: Traductor a 16 bits.
 
 ---
 *Proyecto final de la materia de Seminario de Traductores de Lenguajes II.*
