@@ -1,16 +1,16 @@
 import streamlit as st
 import pandas as pd
 import re
+import os
 import analizadorLexico as lex
 import arbol_sintactico_lr as parser
 from generador_asm import ASMGenerator
 from analizador_semantico import SemanticAnalyzer
 from parser_lr import load_lr_table
 
-# 1. Configuración de la página (Menú lateral vacío para diseño "Clean")
 st.set_page_config(page_title="Proyecto Final. compilador SEM. Trad Lenguajes II.", layout="wide")
 
-# Estilos CSS para mejorar la estética
+# Estilos CSS
 st.markdown("""
     <style>
     .stApp { background-color: #fcfcfc; }
@@ -32,23 +32,20 @@ def tree_to_dict(node):
         "hijos": [tree_to_dict(c) for c in node.children] if node.children else []
     }
 
-# --- MENÚ LATERAL (VACÍO/CLEAN) ---
+# --- MENÚ LATERAL ---
 with st.sidebar:
     st.title("Proyecto final")
-    st.write("-")
+    st.write("🔥")
 
 # --- CUERPO PRINCIPAL ---
-st.title("Compilador de c++")
-st.caption("Analizador léxico, sintáctico y semántico con generación de código asm para 8086")
+st.title("Compilador de C++")
+st.caption("Analizador léxico, sintáctico y semántico con generación de código ASM para 8086")
 st.divider()
 
-# Layout de dos columnas en el cuerpo principal
 col_input, col_output = st.columns([1, 1.2], gap="large")
 
 with col_input:
-    st.subheader("📝 entrada de Código")
-    
-    # Carga de archivo integrada en el área de trabajo
+    st.subheader("📝 Entrada de Código")
     archivo = st.file_uploader("Importar archivo .cpp", type=["cpp"])
     
     codigo_previo = ""
@@ -62,15 +59,20 @@ with col_input:
         placeholder="Escribe o carga tu código C++..."
     )
     
-    btn_ejecutar = st.button("⚡ compilar codigo", use_container_width=True, type="primary")
+    btn_ejecutar = st.button("⚡ Compilar código", use_container_width=True, type="primary")
 
 with col_output:
     if btn_ejecutar and codigo_fuente:
-        # FASES INICIALES
-        lr_t = load_lr_table("compilador.lr")
-        tokens = lex.lexer(codigo_fuente)
+        # --- CORRECCIÓN DE RUTA PARA LA NUBE ---
+        # Buscamos 'compilador.lr' en la misma carpeta donde está este archivo app.py
+        base_path = os.path.dirname(__file__)
+        path_tabla = os.path.join(base_path, "compilador.lr")
         
         try:
+            # FASES INICIALES
+            lr_t = load_lr_table(path_tabla) # Usamos la ruta absoluta
+            tokens = lex.lexer(codigo_fuente)
+            
             # 1. PARSER (Sintáctico)
             exito, tree, error_sint, historial = parser.parse_lr_with_tree(lr_t, tokens)
             
@@ -81,7 +83,6 @@ with col_output:
                 analyzer = SemanticAnalyzer()
                 errores_sem = analyzer.analyze(tree)
                 
-                # PESTAÑAS DE RESULTADOS
                 t1, t2, t3 = st.tabs(["📊 Estructura AST", "🔍 Semántica", "📜 ASM Final"])
                 
                 with t1:
@@ -109,15 +110,10 @@ with col_output:
 
                 with t3:
                     st.write("**Código Ensamblador Generado (emu8086):**")
-                    
-                    # 3. GENERADOR ASM (Basado en el árbol real)
                     asm_gen = ASMGenerator()
                     try:
-                        # Generamos a partir del árbol real del parser
                         codigo_asm = asm_gen.generate(tree)
-                        
                         st.code(codigo_asm, language="asm")
-                        
                         st.download_button(
                             label="📥 Descargar para emu8086",
                             data=codigo_asm,
@@ -125,8 +121,10 @@ with col_output:
                             use_container_width=True
                         )
                     except Exception as e:
-                        st.error(f"Fallo en traducción: {e}")
+                        st.error(f"Fallo en traducción ASM: {e}")
 
+        except FileNotFoundError:
+            st.error(f"Archivo 'compilador.lr' no encontrado en la ruta: {path_tabla}")
         except Exception as e:
             st.error(f"Error crítico en el motor: {e}")
     else:
